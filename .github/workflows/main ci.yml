@@ -1,0 +1,44 @@
+name: java ci here
+
+on: [push, pull_request]
+
+jobs:
+
+  Maven_run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 8
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+  run_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 8
+
+      - name: Run Test
+        run: mvn -pl swagger/swagger-generator test -Dtest="org.apache.servicecomb.swagger.generator.core.TestSwaggerUtils#testPartArray"
+                
+  run_test_with_nondex:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 8
+        
+      - name: Run Test w nondex
+        run: mvn -pl wagger/swagger-generator edu.illinois:nondex-maven-plugin:1.1.2:nondex -Dtest="org.apache.servicecomb.swagger.generator.core.TestSwaggerUtils#testPartArray"
+        
+        
